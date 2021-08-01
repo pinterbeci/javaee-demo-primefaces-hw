@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xml:lang="en" lang="en">
+<h:head>
+    <title>Author demo</title>
+</h:head>
+<body>
+<h:form id="form">
+
+    <!--
+            //JSF form and CRUD!!!
+    <h:dataTable id="catTable" value="#{catCRUDMBean.list}" var="cat">
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            #{cat.id}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Típus</f:facet>
+            #{cat.animalType}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Név</f:facet>
+            #{cat.name}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Lábak száma</f:facet>
+            #{cat.legsNumb}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Nyávogás</f:facet>
+            #{cat.meow}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Funkciók</f:facet>
+            <h:commandButton value="Törlés" actionListener="#{catCRUDMBean.remove(cat)}">
+                <f:ajax render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="Módosítás" actionListener="#{catCRUDMBean.setSelectedCat(cat)}">
+                <f:ajax render="@form"/>
+            </h:commandButton>
+        </h:column>
+
+    </h:dataTable>
+
+    <h:outputText value="Név"/>
+    <h:inputText value="#{catCRUDMBean.selectedCat.name}"/>
+    <br/>
+
+    <h:outputText value="Lábak száma"/>
+    <h:inputText value="#{catCRUDMBean.selectedCat.legsNumb}"/>
+    <br/>
+
+    <h:outputText value="Nyávogás"/>
+    <h:inputText value="#{catCRUDMBean.selectedCat.meow}"/>
+    <br/>
+    <h:commandButton value="Mentés" actionListener="#{catCRUDMBean.save()}">
+        <f:ajax execute="@form" render="@form"/>
+    </h:commandButton>
+    //Primefaces CRUD bellow
+-->
+
+    <p:growl id="growl" showDetail="false"/>
+
+    <p:commandButton id="add" icon="pi pi-plus" process="@this" value="Új hozzáadása"
+                     actionListener="#{authorCRUDMBean.initSave}" update="@form"/>
+    <p:commandButton id="columntTogglerBtn" icon="pi pi-table"/>
+    <p:columnToggler trigger="columntTogglerBtn" datasource="table"/>
+
+    <p:commandButton value="XLS" styleClass="p-mr-2 p-mb-2">
+        <p:dataExporter type="xls" target="table" fileName="export"/>
+    </p:commandButton>
+
+    <p:commandButton value="XLXS" styleClass="p-mr-2 p-mb-2">
+        <p:dataExporter type="xlsxstream" target="table" fileName="export"/>
+    </p:commandButton>
+
+    <p:commandButton value="PDF" styleClass="p-mr-2 p-mb-2">
+        <p:dataExporter type="pdf" target="table" fileName="export"/>
+    </p:commandButton>
+
+    <p:commandButton value="CSV" styleClass="p-mr-2 p-mb-2">
+        <p:dataExporter type="csv" target="table" fileName="export"/>
+    </p:commandButton>
+
+    <p:dataTable id="table" value="#{authorCRUDMBean.list}" var="author" rows="10"
+                 paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                 rowsPerPageTemplate="5,10,{ShowAll|'All'}">
+        <p:column style="width:2rem" exportable="false">
+            <p:rowToggler/>
+        </p:column>
+        <p:column toggleable="false" sortBy="#{author.id}" filterBy="#{author.id}" filterMatchMode="contains"
+                  headerText="ID">
+            <h:outputText value="#{author.id}"/>
+        </p:column>
+        <p:column sortBy="#{author.lastName}" filterBy="#{author.lastName}" filterMatchMode="contains"
+                  headerText="Last name">
+            <h:outputText value="#{author.lastName}"/>
+        </p:column>
+        <p:column sortBy="#{author.firstName}" filterBy="#{author.firstName}" filterMatchMode="contains"
+                  headerText="First name">
+            <h:outputText value="#{author.firstName}"/>
+        </p:column>
+        <p:column sortBy="#{author.createdDate}" filterBy="#{author.createdDate}" filterMatchMode="contains"
+                  headerText="Created date">
+            <h:outputText value="#{author.createdDate}"/>
+        </p:column>
+        <p:column sortBy="#{author.lastModifiedDate}" filterBy="#{author.lastModifiedDate}" filterMatchMode="contains"
+                  headerText="Last modified date ">
+            <h:outputText value="#{author.lastModifiedDate}"/>
+        </p:column>
+        <p:column headerText="Funkció gombok" exportable="false">
+            <p:commandButton id="delete" icon="pi pi-times" process="@this" value="Törlés"
+                             actionListener="#{authorCRUDMBean.remove(author)}"
+                             update="@form">
+                <p:confirm header="Törlés" message="Biztos vagy benne?" icon="pi pi-times"/>
+            </p:commandButton>
+            <!-- Hákolt, de müködő megoldás @([id$=formPanel]) -->
+            <p:commandButton id="update" process="@this" value="Módosítás" icon="pi pi-pencil"
+                             actionListener="#{authorCRUDMBean.initEdit(author)}" update=":form:formPanelHolder"/>
+        </p:column>
+        <p:rowExpansion>
+            <div>
+                Username: #{author.userName}
+            </div>
+        </p:rowExpansion>
+    </p:dataTable>
+
+    <p:outputPanel id="formPanelHolder">
+        <p:panelGrid layout="grid" columns="2" id="formPanel" style="width:400px"
+                     rendered="#{authorCRUDMBean.inFunction}">
+            <p:outputLabel value="First name"/>
+            <p:inputText required="true" requiredMessage="Must be first name!"
+                         value="#{authorCRUDMBean.selectedAuthor.firstName}"/>
+
+            <p:outputLabel value="Last name"/>
+            <p:inputText required="true" requiredMessage="Must be last name!"
+                         value="#{authorCRUDMBean.selectedAuthor.lastName}"/>
+
+            <p:outputLabel value="Username"/>
+            <p:inputText required="true" requiredMessage="Must be username!"
+                         value="#{authorCRUDMBean.selectedAuthor.userName}"/>
+
+
+            <p:commandButton value="Mentés" icon="pi pi-save" actionListener="#{authorCRUDMBean.save()}"
+                             process="formPanel" update="@form">
+            </p:commandButton>
+        </p:panelGrid>
+    </p:outputPanel>
+
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+        <p:commandButton value="Nem" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+        <p:commandButton value="Igen" type="button" styleClass="ui-confirmdialog-yes"/>
+    </p:confirmDialog>
+
+</h:form>
+
+</body>
+</html>

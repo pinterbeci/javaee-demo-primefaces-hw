@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xml:lang="en" lang="en">
+<h:head>
+    <title>BlogPost demo</title>
+</h:head>
+<body>
+<h:form id="form">
+    <p:growl id="growl" showDetail="false"/>
+
+
+    <p:toolbar>
+        <p:toolbarGroup id="functionGroup">
+            <p:commandButton id="add" icon="pi pi-plus" process="@this" value="Új hozzáadása"
+                             actionListener="#{blogPostCRUDMBean.initSave}" update="@form"/>
+
+            <p:commandButton id="delete" icon="pi pi-times" process="@this" value="Törlés"
+                             actionListener="#{blogPostCRUDMBean.remove}"
+                             update="@form">
+                <p:confirm header="Törlés" message="Biztos vagy benne?" icon="pi pi-times"/>
+            </p:commandButton>
+            <!-- Hákolt, de müködő megoldás @([id$=formPanel]) -->
+            <p:commandButton id="update" process="@this" value="Módosítás" icon="pi pi-pencil"
+                             actionListener="#{blogPostCRUDMBean.initEdit}" update=":form:formPanelHolder"/>
+        </p:toolbarGroup>
+
+
+        <p:toolbarGroup id="utilGroup" align="right">
+
+            <p:commandButton value="XLS" styleClass="p-mr-2 p-mb-2">
+                <p:dataExporter type="xls" target="table" fileName="export"/>
+            </p:commandButton>
+
+
+            <p:commandButton value="XLXS" styleClass="p-mr-2 p-mb-2">
+                <p:dataExporter type="xlsxstream" target="table" fileName="export"/>
+            </p:commandButton>
+
+
+            <p:commandButton value="PDF" styleClass="p-mr-2 p-mb-2">
+                <p:dataExporter type="pdf" target="table" fileName="export"/>
+            </p:commandButton>
+
+            <p:commandButton value="CSV" styleClass="p-mr-2 p-mb-2">
+                <p:dataExporter type="csv" target="table" fileName="products"/>
+            </p:commandButton>
+        </p:toolbarGroup>
+    </p:toolbar>
+
+
+    <p:dataTable id="table" value="#{blogPostCRUDMBean.list}" var="blogPost" rows="10"
+                 selectionMode="single" selection="#{blogPostCRUDMBean.selecteBlogPost}"
+                 rowKey="#{blogPost.id}" paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                 rowsPerPageTemplate="5,10,{ShowAll|'All'}">
+        <p:ajax event="rowSelect" update="@form"/>
+
+
+        <p:column toggleable="false" sortBy="#{blogPost.id}" filterBy="#{blogPost.id}" filterMatchMode="contains"
+                  headerText="ID">
+            <h:outputText value="#{blogPost.id}"/>
+        </p:column>
+
+        <p:column toggleable="false" sortBy="#{blogPost.category}" filterBy="#{blogPost.category}"
+                  filterMatchMode="contains"
+                  headerText="Category">
+            <h:outputText value="#{blogPost.category}"/>
+        </p:column>
+
+
+        <p:column toggleable="false" sortBy="#{blogPost.tittle}" filterBy="#{blogPost.tittle}"
+                  filterMatchMode="contains"
+                  headerText="Tittle">
+            <h:outputText value="#{blogPost.tittle}"/>
+        </p:column>
+
+        <p:column toggleable="false" sortBy="#{blogPost.content}" filterBy="#{blogPost.content}"
+                  filterMatchMode="contains" headerText="Content">
+            <h:outputText value="#{blogPost.content}"/>
+        </p:column>
+
+        <p:column toggleable="false" sortBy="#{blogPost.createdDate}" filterBy="#{blogPost.createdDate}"
+                  filterMatchMode="contains" headerText="Created date">
+            <h:outputText value="#{blogPost.createdDate}"/>
+        </p:column>
+
+        <p:column toggleable="false" sortBy="#{blogPost.lastModifiedDate}"
+                  filterBy="#{blogPost.lastModifiedDate}"
+                  filterMatchMode="contains" headerText="Last modified date">
+            <h:outputText value="#{blogPost.lastModifiedDate}"/>
+        </p:column>
+        <p:column toggleable="false" sortBy="#{blogPost.publishedDate}" filterBy="#{blogPost.publishedDate}"
+                  filterMatchMode="contains" headerText="Published date">
+            <h:outputText value="#{blogPost.publishedDate}"/>
+        </p:column>
+
+    </p:dataTable>
+
+
+    <p:outputPanel id="formPanelHolder">
+        <p:panelGrid layout="grid" columns="2" id="formPanel" style="width:400px"
+                     rendered="#{blogPostCRUDMBean.inFunction}">
+            <p:outputLabel value="Content"/>
+            <p:inputText required="true" requiredMessage="Must be Content!"
+                         value="#{blogPostCRUDMBean.selecteBlogPost.content}"/>
+
+            <p:outputLabel value="Tittle"/>
+            <p:inputText required="true" requiredMessage="Must be Tittle!"
+                         value="#{blogPostCRUDMBean.selecteBlogPost.tittle}"/>
+
+
+            <!--  <div class="ui-fluid p-formgrid p-grid">-->
+
+            <div class="p-field p-col-12 p-md-4">
+                <p:outputLabel for="@next" value="Category"/>
+                <p:selectOneMenu id="option" value="#{blogPostCRUDMBean.selecteBlogPost.category}">
+                    <f:selectItem itemLabel="Select one" itemValue=""/>
+                    <f:selectItem itemLabel="JAVA" itemValue="JAVA"/>
+                    <f:selectItem itemLabel="SQL" itemValue="SQL"/>
+                    <f:selectItem itemLabel="MAVEN" itemValue="MAVEN"/>
+                    <f:facet name="footer">
+                        <p:divider styleClass="p-mt-0"/>
+                        <h:outputText value="3 options" style="font-weight:bold;"/>
+                    </f:facet>
+                </p:selectOneMenu>
+            </div>
+
+
+            <div class="p-field p-col-12 p-md-4">
+                <p:outputLabel for="basic" value="Published date"/>
+                <p:datePicker id="basic" value="#{blogPostCRUDMBean.selecteBlogPost.publishedDate}"/>
+            </div>
+
+
+            <p:commandButton value="Save" icon="pi pi-save" actionListener="#{blogPostCRUDMBean.save()}"
+                             process="formPanel" update="@form">
+            </p:commandButton>
+        </p:panelGrid>
+    </p:outputPanel>
+
+
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+        <p:commandButton value="Nem" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+        <p:commandButton value="Igen" type="button" styleClass="ui-confirmdialog-yes"/>
+    </p:confirmDialog>
+
+</h:form>
+
+</body>
+</html>

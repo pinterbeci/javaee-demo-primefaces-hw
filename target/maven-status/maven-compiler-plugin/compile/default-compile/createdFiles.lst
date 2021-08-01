@@ -1,0 +1,12 @@
+hu\ulyssys\java\course\javaee\demo\entity\AbstractBlog.class
+hu\ulyssys\java\course\javaee\demo\service\impl\AbstractBlogService.class
+hu\ulyssys\java\course\javaee\demo\service\impl\AuthorServiceImpl.class
+hu\ulyssys\java\course\javaee\demo\entity\TypeOfCategory.class
+hu\ulyssys\java\course\javaee\demo\entity\Author.class
+hu\ulyssys\java\course\javaee\demo\service\impl\BlogPostServiceImpl.class
+hu\ulyssys\java\course\javaee\demo\mbean\BlogPostCRUDMBean.class
+hu\ulyssys\java\course\javaee\demo\mbean\AuthorCRUDMBean.class
+hu\ulyssys\java\course\javaee\demo\service\CoreService.class
+hu\ulyssys\java\course\javaee\demo\service\AuthorService.class
+hu\ulyssys\java\course\javaee\demo\service\BlogPostService.class
+hu\ulyssys\java\course\javaee\demo\entity\BlogPost.class
